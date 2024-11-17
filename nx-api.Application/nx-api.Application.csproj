@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>nx_api.Application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nx-api.Contract\nx-api.Contract.csproj" />
+    <ProjectReference Include="..\nx-api.Data\nx-api.Data.csproj" />
+    <ProjectReference Include="..\nx-api.Domain\nx-api.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

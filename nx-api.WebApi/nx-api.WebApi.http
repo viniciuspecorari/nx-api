@@ -1,0 +1,6 @@
+@nx_api.WebApi_HostAddress = http://localhost:5228
+
+GET {{nx_api.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
