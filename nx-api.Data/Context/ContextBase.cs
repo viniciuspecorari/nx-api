@@ -22,6 +22,7 @@ namespace nx_api.Data.Context
 
         public IDbConnection GetConnection()
         {
+            _logger.LogInformation("Inicializando conexão...");
             if (ConnectionString is null)
                 InitializeConnectionString();
 
@@ -30,7 +31,8 @@ namespace nx_api.Data.Context
 
         private void InitializeConnectionString()
         {
-            ConnectionString =  _configuration.GetConnectionString("NXDB");            
+            _logger.LogInformation("ConnectionString: {string}", _configuration["ConnectionStrings:NXDB"]);
+            ConnectionString = _configuration["ConnectionStrings:NXDB"];
         }
 
         public async Task ExecuteWithTransactionAsync(string procedure, DynamicParameters? parameters = null, int timeout = 30)
