@@ -18,8 +18,4 @@
     <ProjectReference Include="..\nx-api.Domain\nx-api.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>

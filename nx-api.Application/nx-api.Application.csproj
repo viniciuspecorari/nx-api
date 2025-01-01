@@ -13,8 +13,4 @@
     <ProjectReference Include="..\nx-api.Domain\nx-api.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>
