@@ -20,22 +20,27 @@ namespace nx_api.Data.Repositories
             _logger = logger;
         }
 
-        public async Task CreateUser(UserDto create)
-        {
+        public async Task CreateUser(User create)
+        {            
             try
             {
-                string procedure = "[ONBOARDING].[USERS_INS]";
+                _logger.LogInformation("Creating user...");
+
+                string procedure = "[ONBOARDING].[USERS_INS]";                
 
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@NAME", create.Name);
                 parameters.Add("@EMAIL", create.Email);
                 parameters.Add("@PASSWORD", create.Password);
+                parameters.Add("@SALT", create.Salt);
 
                 await _context.ExecuteWithTransactionAsync(procedure, parameters, 60);
+
+                _logger.LogInformation("User created successfully!");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Houve um problema ao cadastrar o usuário: {UserJson}", JsonSerializer.Serialize(create));
+                _logger.LogError(ex, "Error ocurred create user: {UserJson}", JsonSerializer.Serialize(create));
                 throw;
             }
         }
@@ -45,9 +50,41 @@ namespace nx_api.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<UserDto> GetUser(string id)
+        public async Task<User> GetUserById(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Buscando usuário...");
+                string procedure = "[ONBOARDING].[USER_BY_ID_GET]";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@USER_ID", id);
+
+                return await _context.GetAsync<User>(procedure, parameters, 60);
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error ocurred get user: {id}", id);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            try
+            {
+                _logger.LogInformation("Buscando usuários...");
+                string procedure = "[ONBOARDING].[USERS_GET]";
+
+                return await _context.GetCollectionAsync<User>(procedure, null, 60);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error ocurred get users");
+                throw;
+            }
         }
 
         public Task UpdateUser(string id, UserDto update)

@@ -12,6 +12,7 @@ CREATE TABLE [dbo].[Users](
 	[Name] [nvarchar](150) NULL,
 	[Email] [nvarchar](100) NULL,
 	[Password] [nvarchar](100) NULL,
+	[Salt] [nvarchar](100) NULL,
 	[CreatedAt] [datetime] NULL
 ) ON [PRIMARY]
 GO

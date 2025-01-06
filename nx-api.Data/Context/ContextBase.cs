@@ -63,5 +63,67 @@ namespace nx_api.Data.Context
                 connection.Close();
             }
         }
+
+        public async Task<IEnumerable<dynamic>> GetCollectionAsync<dynamic>(string procedure, DynamicParameters? parameters = null, int timeout = 30)
+        {
+            using var connection = GetConnection();
+            connection.Open();
+            IDbTransaction transaction = connection.BeginTransaction();
+
+            try
+            {
+                var result = await connection.QueryAsync<dynamic>(
+                    sql: procedure,
+                    param: parameters,
+                    transaction: transaction,
+                    commandTimeout: timeout,
+                    commandType: CommandType.StoredProcedure);
+
+                transaction.Commit();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                _logger.LogError(ex, "An error occured while executing {procedure}", procedure);
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public async Task<dynamic> GetAsync<dynamic>(string procedure, DynamicParameters? parameters = null, int timeout = 30)
+        {
+            using var connection = GetConnection();
+            connection.Open();
+            IDbTransaction transaction = connection.BeginTransaction();
+
+            try
+            {
+                var result = await connection.QueryFirstOrDefaultAsync<dynamic>(
+                    sql: procedure,
+                    param: parameters,
+                    transaction: transaction,
+                    commandTimeout: timeout,
+                    commandType: CommandType.StoredProcedure);
+
+                transaction.Commit();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                _logger.LogError(ex, "An error occured while executing {procedure}", procedure);
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

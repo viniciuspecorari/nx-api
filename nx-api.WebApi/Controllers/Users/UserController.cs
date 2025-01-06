@@ -21,6 +21,20 @@ namespace nx_api.WebApi.Controllers.Users
         {
             await _service.CreateUser(request);
             return Ok();
-        }     
+        }
+
+        [Route("GetUserById")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserById([FromQuery] string id)
+        {            
+            return Ok(await _service.GetUserById(id));
+        }
+
+        [Route("GetUsers")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            return Ok(await _service.GetUsers());
+        }
     }
 }

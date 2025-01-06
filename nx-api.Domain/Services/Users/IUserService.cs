@@ -8,6 +8,7 @@ namespace nx_api.Domain.Services.Users
         Task CreateUser(UserDto create);
         Task UpdateUser(string id, UserDto update);
         Task DeleteUser(string id);
-        Task<UserDto> GetUser(string id);
+        Task<User> GetUserById(string id);
+        Task<IEnumerable<User>> GetUsers();
     }
 }
