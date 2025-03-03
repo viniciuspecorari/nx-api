@@ -1,0 +1,40 @@
+SET
+    ANSI_NULLS ON
+GO
+SET
+    QUOTED_IDENTIFIER ON
+GO
+    CREATE
+    OR ALTER PROCEDURE [ONBOARDING].[USERS_UPT] (
+        @ID VARCHAR(150),
+        @NAME VARCHAR(150) = NULL,
+        @EMAIL VARCHAR(100) = NULL,
+        @PASSWORD VARCHAR(100) = NULL,
+        @SALT VARCHAR(100) = NULL
+    ) AS BEGIN
+SET
+    NOCOUNT ON;
+
+UPDATE
+    Users
+SET
+    [Name] = CASE
+        WHEN @NAME IS NOT NULL THEN @NAME
+        ELSE [Name]
+    END,
+    [Email] = CASE
+        WHEN @EMAIL IS NOT NULL THEN @EMAIL
+        ELSE [Email]
+    END,
+    [Password] = CASE
+        WHEN @PASSWORD IS NOT NULL THEN @PASSWORD
+        ELSE [Password]
+    END,
+    [Salt] = CASE
+        WHEN @SALT IS NOT NULL THEN @SALT
+        ELSE [Salt]
+    END
+WHERE
+    ID = @ID
+END
+GO

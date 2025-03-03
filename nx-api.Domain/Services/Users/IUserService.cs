@@ -6,7 +6,7 @@ namespace nx_api.Domain.Services.Users
     public interface IUserService
     {
         Task CreateUser(UserDto create);
-        Task UpdateUser(string id, UserDto update);
+        Task UpdateUser(UserDto userDto);
         Task DeleteUser(string id);
         Task<User> GetUserById(string id);
         Task<IEnumerable<User>> GetUsers();

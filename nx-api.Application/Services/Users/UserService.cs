@@ -9,11 +9,13 @@ namespace nx_api.Application.Services.Users
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repository;        
+        private readonly IUserRepository _repository;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository repository)
+        public UserService(IUserRepository repository, ILogger<UserService> logger)
         {
-            _repository = repository;            
+            _repository = repository;
+            _logger = logger;
         }
 
         #region [UserMethods]
@@ -38,28 +40,40 @@ namespace nx_api.Application.Services.Users
             await _repository.CreateUser(newUser);
         }
 
-        public Task DeleteUser(string id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task DeleteUser(string id) => await _repository.DeleteUser(id);        
+        public async Task<User> GetUserById(string id) => await _repository.GetUserById(id);
+        public async Task<IEnumerable<User>> GetUsers() => await _repository.GetUsers();
 
-        public async Task<User> GetUserById(string id)
-        {
-            return await _repository.GetUserById(id);
-        }
+        public async Task UpdateUser(UserDto userDto)
+        {            
+            // Update Password
+            if (userDto.Password is not null && userDto.NewPassword is not null)
+            {
+                try
+                {
+                    var user = GetUserById(userDto.Id);
 
-        public async Task<IEnumerable<User>> GetUsers()
-        {
-            return await _repository.GetUsers();
-        }
+                    if (!VerifyPasswordHash(userDto.Password, user.Result.Password, user.Result.Salt))
+                        throw new Exception("A senha informada é inválida!");
 
-        public Task UpdateUser(string id, UserDto update)
-        {
-            throw new NotImplementedException();
+                    // CRIANDO SENHA
+                    CreatePasswordHash(userDto.NewPassword,
+                                        out string passwordHash,
+                                        out string passwordSalt);
+
+                    userDto.NewPassword = passwordHash;
+                    userDto.NewSalt = passwordSalt;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erro ao atualizar os dados do usuário {id}. A senha informada é inválida!", userDto.Id);
+                    throw;
+                }               
+            }
+
+            await _repository.UpdateUser(userDto);
         }
         #endregion
-
-
 
         #region [Utils]
         private static void CreatePasswordHash(string password, out string passwordHash, out string passwordSalt)
@@ -75,7 +89,7 @@ namespace nx_api.Application.Services.Users
         {
             using (var hmac = new HMACSHA512(Convert.FromBase64String(storedSalt)))
             {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));                
                 return Convert.ToBase64String(computedHash) == storedHash;
             }
         }

@@ -6,7 +6,7 @@ namespace nx_api.Domain.Repositories.Users
     public interface IUserRepository
     {
         Task CreateUser(User create);
-        Task UpdateUser(string id, UserDto update);
+        Task UpdateUser(UserDto update);
         Task DeleteUser(string id);
         Task<User> GetUserById(string id);
         Task<IEnumerable<User>> GetUsers();

@@ -17,7 +17,7 @@ namespace nx_api.WebApi.Controllers.Users
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(UserDto request)
+        public async Task<IActionResult> CreateUser([FromBody] UserDto request)
         {
             await _service.CreateUser(request);
             return Ok();
@@ -35,6 +35,22 @@ namespace nx_api.WebApi.Controllers.Users
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _service.GetUsers());
+        }
+
+        [Route("UpdateUser")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UserDto? userDto)
+        {
+            await _service.UpdateUser(userDto);
+            return Ok();
+        }
+
+        [Route("DeleteUser")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser([FromQuery] string id)
+        {
+            await _service.DeleteUser(id);
+            return Ok();
         }
     }
 }

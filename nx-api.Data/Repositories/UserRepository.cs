@@ -4,6 +4,7 @@ using nx_api.Domain.Context;
 using nx_api.Domain.Dtos.Users;
 using nx_api.Domain.Entities.Users;
 using nx_api.Domain.Repositories.Users;
+using System.Data;
 using System.Drawing;
 using System.Text.Json;
 
@@ -45,9 +46,23 @@ namespace nx_api.Data.Repositories
             }
         }
 
-        public Task DeleteUser(string id)
+        public async Task DeleteUser(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Deletando usuário {id}...", id);
+                string procedure = "[ONBOARDING].[USER_DEL]";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("ID", id);
+
+                 await _context.ExecuteWithTransactionAsync(procedure, parameters, 60);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error ocurred delete user: {id}", id);
+                throw;
+            }
         }
 
         public async Task<User> GetUserById(string id)
@@ -87,9 +102,28 @@ namespace nx_api.Data.Repositories
             }
         }
 
-        public Task UpdateUser(string id, UserDto update)
+        public async Task UpdateUser(UserDto userDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Atualizando dados do usuário {id}...", userDto.Id);
+                string procedure = "[ONBOARDING].[USERS_UPT]";
+
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@ID", userDto.Id);
+                parameters.Add("@NAME", userDto.Name);
+                parameters.Add("@EMAIL", userDto.Email);
+                parameters.Add("@PASSWORD", userDto.NewPassword);
+                parameters.Add("@SALT", userDto.NewSalt);
+
+                await _context.ExecuteWithTransactionAsync(procedure, parameters, 60);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error ocurred update user");
+                throw;
+            }
         }
     }
 }
