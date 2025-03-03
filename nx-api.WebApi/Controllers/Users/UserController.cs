@@ -16,6 +16,7 @@ namespace nx_api.WebApi.Controllers.Users
             _service = service;            
         }
 
+        [Route("CreateUser")]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserDto request)
         {

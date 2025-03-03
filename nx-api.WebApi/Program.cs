@@ -1,4 +1,5 @@
 using nx_api.WebApi.Extensions;
+using nx_api.WebApi.MiddlewareExceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ builder.Services
     .AddServices();
 
 var app = builder.Build();
+
+// Registra o middleware de exceção no pipeline
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
