@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using nx_api.WebApi.MiddlewareExceptions;
+using nx_api.Domain.Request.Users;
 
 namespace nx_api.Application.Services.Users
 {
@@ -27,8 +28,8 @@ namespace nx_api.Application.Services.Users
             _config = config;
         }
 
-        #region [UserMethods]
-        public async Task CreateUser(UserDto create)
+        #region .: IUserService :.
+        public async Task CreateUser(CreateUserRequest create)
         {
             var salt = GenerateSalt();
             var newUser = new User
@@ -40,14 +41,11 @@ namespace nx_api.Application.Services.Users
                 CreatedAt = DateTime.UtcNow,
             };
 
-
             await _repository.CreateUser(newUser);
         }
-
         public async Task DeleteUser(string id) => await _repository.DeleteUser(id);
         public async Task<User> GetUserById(string id) => await _repository.GetUserById(id);
         public async Task<IEnumerable<User>> GetUsers() => await _repository.GetUsers();
-
         public async Task UpdateUser(UserDto userDto)
         {
             // Update Password
@@ -73,7 +71,9 @@ namespace nx_api.Application.Services.Users
 
             await _repository.UpdateUser(userDto);
         }
+        #endregion
 
+        #region .: Methods :.
         public static string GeneratePasswordHash(string password, string salt, string pepper, int iteration)
         {
             if (iteration <= 0) return password;
@@ -95,7 +95,7 @@ namespace nx_api.Application.Services.Users
         }
 
         public bool VerifyPassword(string password, string passwordSave) => passwordSave != password;
-
         #endregion
+
     }
 }

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using nx_api.Domain.Dtos.Users;
+using nx_api.Domain.Request.Users;
 using nx_api.Domain.Services.Users;
 
 namespace nx_api.WebApi.Controllers.Users
@@ -16,29 +16,29 @@ namespace nx_api.WebApi.Controllers.Users
             _service = service;            
         }
 
-        [Route("CreateUser")]
+        [Route("Create")]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto request)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
             await _service.CreateUser(request);
             return Ok();
         }
 
-        [Route("GetUserById")]
+        [Route("GetById")]
         [HttpGet]
         public async Task<IActionResult> GetUserById([FromQuery] string id)
         {            
             return Ok(await _service.GetUserById(id));
         }
 
-        [Route("GetUsers")]
+        [Route("GetAll")]
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _service.GetUsers());
         }
 
-        [Route("UpdateUser")]
+        [Route("Update")]
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserDto? userDto)
         {
@@ -46,7 +46,7 @@ namespace nx_api.WebApi.Controllers.Users
             return Ok();
         }
 
-        [Route("DeleteUser")]
+        [Route("Delete")]
         [HttpDelete]
         public async Task<IActionResult> DeleteUser([FromQuery] string id)
         {
