@@ -57,7 +57,7 @@ namespace nx_api.WebApi.MiddlewareExceptions
                 var response = new
                 {
                     StatusCode = context.Response.StatusCode,
-                    Message = "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+                    Message = exception.Message,
                     StackTrace = exception.StackTrace
                 };
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
